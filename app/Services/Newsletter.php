@@ -6,7 +6,7 @@ use MailchimpMarketing\ApiClient;
 
 class Newsletter
 {
-    public function __construct(protected ApiClient $clinet)
+    public function __construct(protected ApiClient $client)
     {
        // 
     }
@@ -15,7 +15,7 @@ class Newsletter
     {
         $list ??= config('services.mailchimp.lists.subscribers');
         
-        return $this->clinet->lists->addListMember($list, [
+        return $this->client->lists->addListMember($list, [
             'email_address' => $email,
             'status' => 'subscribed'
         ]);
