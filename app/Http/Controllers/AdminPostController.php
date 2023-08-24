@@ -43,23 +43,52 @@ class AdminPostController extends Controller
         return view('admin.posts.edit', ['post' => $post]);
     }
 
-    public function update(Post $post)
-    {
-        $attributes = request()->validate([
-            'title'=>'required',
-            'thumbnail'=>'required|image',
-            'slug'=>['required', Rule::unique('posts','slug')->ignore($post->id)],
-            'excerpt'=>'required',
-            'body'=>'required',
-            'category_id'=>['required', Rule::exists('categories', 'id')],
-        ]);
+    // public function update(Post $post)
+    // {
+    //     $attributes = request()->validate([
+    //         'title'=>'required',
+    //         'thumbnail'=>'required|image',
+    //         'slug'=>['required', Rule::unique('posts','slug')->ignore($post->id)],
+    //         'excerpt'=>'required',
+    //         'body'=>'required',
+    //         'category_id'=>['required', Rule::exists('categories', 'id')],
+    //     ]);
 
-        if(isset($attributes['thumbnail'])){
-        $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
-        }
+    //     if(isset($attributes['thumbnail'])){
+    //     $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
+    //     }
 
-        $post->update($attributes);
-        return back()->with('success', 'Post Updated!');
+    //     $post->update($attributes);
+    //     return back()->with('success', 'Post Updated!');
+    // }
+   public function update($id)
+{
+    $post = Post::findOrFail($id);
+    $validatedData = request()->validate([
+        'title' => 'required',
+        'thumbnail' => 'image',
+        'slug' => ['required', Rule::unique('posts', 'slug')->ignore($post->id)],
+        'excerpt' => 'required',
+        'body' => 'required',
+        'category_id' => ['required', Rule::exists('categories', 'id')]
+    ]);
+
+    if (isset($validatedData['thumbnail'])) {
+        $validatedData['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
     }
+
+    $validatedData['user_id'] = auth()->user()->id;
+
+    $post->update($validatedData);
+
+    return back()->with('success', 'Post Updated!');
+}
+public function destroy($id)
+{
+    $post = Post::findOrFail($id);
+    $post->delete();
+
+    return back()->with('success', 'Post Deleted!');
+}
     
 }

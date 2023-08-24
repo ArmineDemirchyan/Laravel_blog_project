@@ -2,9 +2,10 @@
     <x-setting :heading="'Edit Post: ' . $post->title">
 
 
-        <form action="/admin/posts/{{$post->id}}" method="post" enctype="multipart/form-data">
-        @method('PATCH')    
-        @csrf
+        <form action="/admin/posts/{{$post->id}}/edit" method="POST" enctype="multipart/form-data">
+      
+        @csrf 
+          @method('PATCH')   
             <x-form.input name="title" :value="old('title', $post->title)" />
             <x-form.input name="slug" :value="old('slug', $post->slug)" />
             <div class="flex mt-8">
@@ -33,7 +34,7 @@
 
 
 
-            <x-form.button>Publish</x-form.button>
+            <x-form.button>Update</x-form.button>
         </form>
     </x-setting>
 

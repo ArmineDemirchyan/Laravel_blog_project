@@ -32,6 +32,6 @@ Route::prefix('admin')->middleware('admin')->group(function() {
     Route::get('posts/create', [AdminPostController::class, 'create']);
     Route::get('posts', [AdminPostController::class, 'index']);
     Route::get('posts/{post}/edit', [AdminPostController::class, 'edit']);
-    Route::patch('posts/{post}', [AdminPostController::class, 'update']);
-    //Route::delete('posts/{post}', [AdminPostController::class, 'destroy']);
+    Route::patch('posts/{id}/edit', [AdminPostController::class, 'update']);
+    Route::delete('posts/{id}', [AdminPostController::class, 'destroy']);
 });
