@@ -29,7 +29,7 @@ class AdminPostController extends Controller
             'category_id'=>['required', Rule::exists('categories', 'id')],
         ]);
         $attributes['user_id'] = auth()->id();
-        $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
+        $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails', 'public');
 
         Post::create($attributes);
 
@@ -43,24 +43,6 @@ class AdminPostController extends Controller
         return view('admin.posts.edit', ['post' => $post]);
     }
 
-    // public function update(Post $post)
-    // {
-    //     $attributes = request()->validate([
-    //         'title'=>'required',
-    //         'thumbnail'=>'required|image',
-    //         'slug'=>['required', Rule::unique('posts','slug')->ignore($post->id)],
-    //         'excerpt'=>'required',
-    //         'body'=>'required',
-    //         'category_id'=>['required', Rule::exists('categories', 'id')],
-    //     ]);
-
-    //     if(isset($attributes['thumbnail'])){
-    //     $attributes['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
-    //     }
-
-    //     $post->update($attributes);
-    //     return back()->with('success', 'Post Updated!');
-    // }
    public function update($id)
 {
     $post = Post::findOrFail($id);
@@ -74,7 +56,7 @@ class AdminPostController extends Controller
     ]);
 
     if (isset($validatedData['thumbnail'])) {
-        $validatedData['thumbnail'] = request()->file('thumbnail')->store('thumbnails');
+        $validatedData['thumbnail'] = request()->file('thumbnail')->store('thumbnails', 'public');
     }
 
     $validatedData['user_id'] = auth()->user()->id;

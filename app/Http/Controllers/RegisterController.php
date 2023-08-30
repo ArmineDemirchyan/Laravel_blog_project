@@ -1,15 +1,27 @@
 <?php
 
+// app/Http/Controllers/RegisterController.php
+
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Repositories\UserRepository;
+use App\DTO\UserDTO;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function create()
     {
         return view('register.create');
     }
+
     public function store()
     {
         $attributes = request()->validate([
@@ -19,12 +31,17 @@ class RegisterController extends Controller
             'password' => 'required|max:255|min:7'
         ]);
 
+        $userDTO = new UserDTO(
+            $attributes['name'],
+            $attributes['username'],
+            $attributes['email'],
+            $attributes['password']
+        );
 
-        $user = User::create($attributes);
+        $user = $this->userRepository->create($userDTO);
 
-        auth()->login($user);
+        Auth::login($user);
 
         return redirect('/')->with('success', 'Your account has been created.');
-
     }
 }
